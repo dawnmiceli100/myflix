@@ -1,7 +1,5 @@
 class PagesController < ApplicationController
   def front
-    if signed_in?
-      redirect_to home_path
-    end  
+    redirect_to home_path if signed_in? 
   end
 end
