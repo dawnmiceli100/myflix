@@ -6,7 +6,37 @@
       .video_info.col-sm-3
         %header
           %h3= @video.title
+          %h5 Average Rating: #{@video.average_rating} Stars
         %p= @video.description
         .actions
           %a.btn.btn-primary(href="") Watch Now
           %a.btn.btn-default(href="") + My Queue
+%section.reviews.container
+  .row
+    .col-sm-10.col-sm-offset-1
+      = form_for [@video, Review.new] do |f|
+        %fieldset
+          .form-group
+            %label Rate this video
+            .row
+              .col-sm-3
+                = f.select(:rating, [ ['5 Stars', 5], ['4 Stars', 4], ['3 Stars', 3], ['2 Stars', 2], ['1 Star', 1] ])
+          .form-group
+            %label Write Review
+            .row
+              .col-sm-8
+                = f.text_area :body, rows: 6, class: "col-sm-6"
+        %fieldset.form-group.actions.clearfix
+          %input(type="submit" value="Submit" class="btn")
+          = link_to "Cancel", @video
+      %header
+        %h3 User Reviews (#{@reviews.count})
+      %ul
+        - @reviews.each do |review|
+          %article.review
+            %li.row
+              .col-sm-2
+                %span Rating: #{review.rating} / 5
+                %p by <a href="">#{review.user.full_name}</a>
+              .col-sm-8
+                %p= review.body

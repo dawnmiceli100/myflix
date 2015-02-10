@@ -12,6 +12,14 @@ describe VideosController do
         get :show, id: video.id
         expect(assigns(:video)).to eq(video)
       end
+
+      it "sets the @reviews variable" do
+        video = Fabricate(:video)
+        review1 = Fabricate(:review, video: video)
+        review2 = Fabricate(:review, video: video)
+        get :show, id: video.id
+        expect(assigns(:reviews)).to match_array([review2, review1])
+      end
     end 
 
     describe "POST search" do
@@ -41,5 +49,5 @@ describe VideosController do
       end
     end      
   end
-  
+
 end
