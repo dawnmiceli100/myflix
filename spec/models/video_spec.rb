@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Video do
   it { should belong_to(:category) }
   it { should have_many(:reviews).order("created_at DESC") }
+  it { should have_many(:queue_items) }
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:description) } 
 
@@ -60,7 +61,8 @@ describe Video do
       user2 = Fabricate(:user)
       review1 = Fabricate(:review, video: superman, user: user1)
       review2 = Fabricate(:review, video: superman, user: user2)
-      expect(superman.average_rating).to eq(((review1.rating + review2.rating) / 2).round(1))
+      expect(superman.average_rating).to eq(superman.reviews.average(:rating).round(1))
+      #expect(superman.average_rating).to eq(((review1.rating + review2.rating) / 2).round(1))
     end
   end          
 end
