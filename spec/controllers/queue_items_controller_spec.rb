@@ -43,11 +43,10 @@ describe QueueItemsController do
         expect(authenticated_user.queue_items.last.queue_position).to eq(2)
       end  
       it "does not create the queue_item if there is already a queue_item for that user/video combination" do
-        item_count = authenticated_user.queue_items.count
         video = Fabricate(:video)
         item = Fabricate(:queue_item, video: video, user: authenticated_user)
         post :create, queue_item: { queue_position: nil, user_id: authenticated_user.id, video_id: video.id }, video_id: video.id
-        expect(authenticated_user.queue_items.count).to eq(item_count + 1)
+        expect(authenticated_user.queue_items.count).to eq(1)
       end
       it "redirects to my_queue page" do
         video = Fabricate(:video)
@@ -55,6 +54,43 @@ describe QueueItemsController do
         expect(response).to redirect_to my_queue_path
       end 
     end  
+
+    describe "DELETE destroy" do
+      it "deletes the queue_item" do
+        video1 = Fabricate(:video)
+        video2 = Fabricate(:video)
+        item1 = Fabricate(:queue_item, user: authenticated_user, video: video1)
+        item2 = Fabricate(:queue_item, user: authenticated_user, video: video2)
+        item_count = authenticated_user.queue_items.count
+        delete :destroy, id: item1.id 
+        expect(authenticated_user.queue_items.count).to eq(item_count - 1) 
+      end
+      
+      it "does not allow the current_user to delete an item from another user's queue" do
+        jane = Fabricate(:user)
+        video = Fabricate(:video)
+        janes_item = Fabricate(:queue_item, user: jane, video: video)
+        delete :destroy, id: janes_item.id
+        expect(jane.queue_items.count).to eq(1)
+      end
+        
+      it "reorders the queue_item list" do
+        video1 = Fabricate(:video)
+        video2 = Fabricate(:video)
+        item1 = Fabricate(:queue_item, user: authenticated_user, video: video1)
+        item2 = Fabricate(:queue_item, user: authenticated_user, video: video2)
+        item_count = authenticated_user.queue_items.count
+        delete :destroy, id: item1.id 
+        expect(authenticated_user.queue_items.last.queue_position).to eq(1) 
+      end
+
+      it "redirects to my_queue page" do
+        video = Fabricate(:video)
+        item = Fabricate(:queue_item, user: authenticated_user, video: video)
+        delete :destroy, id: item.id  
+        expect(response).to redirect_to my_queue_path
+      end  
+    end
   end 
 
   context "with unauthenticated user" do
@@ -64,6 +100,13 @@ describe QueueItemsController do
     end  
 
     it "redirects to sign in page for create action" do
+      video = Fabricate(:video)
+      item = Fabricate(:queue_item, video: video)
+      delete :destroy, id: item.id  
+      expect(response).to redirect_to sign_in_path 
+    end  
+
+    it "redirects to sign in page for destroy action" do
       video = Fabricate(:video)
       post :create, queue_item: { queue_position: nil }, video_id: video.id
       expect(response).to redirect_to sign_in_path 
