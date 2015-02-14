@@ -3,6 +3,9 @@ class QueueItem < ActiveRecord::Base
   belongs_to :video
 
   validates_uniqueness_of :video_id, scope: :user_id
+  validates_uniqueness_of :queue_position, scope: :user_id
+
+  validates_numericality_of :queue_position, { only_integer: true } 
 
   delegate :category, to: :video
   delegate :title, to: :video, prefix: :video
