@@ -25,7 +25,7 @@
                   %td
                     = button_to "Play", nil, class: "btn btn-default"
                   %td
-                    = item.rating
+                    = select_tag "queue_items[][rating]", options_for_select([ ["5 Stars", "5"], ["4 Stars", "4"], ["3 Stars", "3"], ["2 Stars", "2"], ["1 Star", "1"] ], item.rating), include_blank: true
                   %td
                     = link_to item.category_name, item.category
                   %td

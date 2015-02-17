@@ -32,6 +32,34 @@ describe QueueItem do
     end  
   end 
 
+  describe "rating=" do
+    it "updates the rating for the review if it exists" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      review = Fabricate(:review, rating: 3, user: user, video: video)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 1
+      expect(Review.first.rating).to eq(1)
+    end
+    
+    it "creates a new review with the rating only (no body), if the review exists" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 1
+      expect(Review.first.rating).to eq(1)
+    end
+
+    it "updates the rating to nil if the blank rating is selected" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      review = Fabricate(:review, rating: 3, user: user, video: video)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = nil
+      expect(Review.first.rating).to be_nil
+    end 
+  end  
+
   describe '#category_name' do
     it "returns the name of the category of the video associated with the queue_item" do
       category = Fabricate(:category, name: "Dramas")

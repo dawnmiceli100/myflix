@@ -20,24 +20,18 @@ class QueueItemsController < ApplicationController
   def destroy
     item = QueueItem.find(params[:id])
     item.destroy if item.user_id == current_user.id
-    reorder_queue_items
+    current_user.reorder_queue_items
     redirect_to my_queue_path 
   end 
 
   def update_queue
     begin
-      ActiveRecord::Base.transaction do
-        params[:queue_items].each do |item|
-          queue_item = QueueItem.find(item["id"])
-          queue_item.update_attributes!(queue_position: item["queue_position"]) if queue_item.user == current_user   
-        end 
-      end 
+      update_queue_items
+      current_user.reorder_queue_items
     rescue ActiveRecord::RecordInvalid
       flash[:danger] = "One or more position numbers are invalid."
-      redirect_to my_queue_path
-      return
-    end   
-    reorder_queue_items
+    end 
+      flash[:success] = "Your queue has been updated."  
     redirect_to my_queue_path
   end  
 
@@ -58,13 +52,13 @@ class QueueItemsController < ApplicationController
     end 
   end  
    
-  def reorder_queue_items
-    new_position = 1
-    @current_user.queue_items.each do |item|
-      item.queue_position = new_position
-      item.save
-      new_position += 1
-    end
+  def update_queue_items
+    ActiveRecord::Base.transaction do
+      params[:queue_items].each do |item|
+        queue_item = QueueItem.find(item["id"])
+        queue_item.update_attributes!(queue_position: item["queue_position"], rating: item["rating"]) if queue_item.user == current_user   
+      end 
+    end 
   end 
    
   def queue_item_params

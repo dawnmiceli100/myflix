@@ -93,22 +93,18 @@ describe QueueItemsController do
     end
 
     describe "POST update_queue" do
+      let(:video1) { Fabricate(:video) }
+      let(:video2) { Fabricate(:video) }
+      let(:item1) { Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1) }
+      let(:item2) { Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2) }
 
       context "with valid input" do
         it "reorders the queue_items" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2}, {id: item2.id, queue_position: 1}]
           expect(authenticated_user.queue_items).to match_array([item2, item1])
         end
 
         it "sets the queue_positions to start with 1" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           item_count = authenticated_user.queue_items.count
           post :update_queue, queue_items: [{id: item1.id, queue_position: 3}, {id: item2.id, queue_position: 1}]
           expect(authenticated_user.queue_items.last.queue_position).to eq(2) 
@@ -116,8 +112,6 @@ describe QueueItemsController do
 
         it "does not allow the current_user to update an item from another user's queue" do
           jane = Fabricate(:user)
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
           janes_item1 = Fabricate(:queue_item, queue_position: 1, user: jane, video: video1)
           janes_item2 = Fabricate(:queue_item, queue_position: 2, user: jane, video: video2)
           post :update_queue, queue_items: [{id: janes_item1.id, queue_position: 2}, {id: janes_item2.id, queue_position: 1}]
@@ -125,10 +119,6 @@ describe QueueItemsController do
         end
 
         it "redirects to my_queue page" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2}, {id: item2.id, queue_position: 1}]
           expect(response).to redirect_to my_queue_path
         end  
@@ -136,28 +126,16 @@ describe QueueItemsController do
 
       context "with invalid input" do
         it "does not update any of the queue_positions of there is an error with any of them" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2}, {id: item2.id, queue_position: 1.5}]
           expect(item1.reload.queue_position).to eq(1)
         end 
 
         it "sets the danger message" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2.5}, {id: item2.id, queue_position: 3}]
           expect(flash[:danger]).not_to be_blank
       end  
 
         it "redirects to my_queue page" do
-          video1 = Fabricate(:video)
-          video2 = Fabricate(:video)
-          item1 = Fabricate(:queue_item, queue_position: 1, user: authenticated_user, video: video1)
-          item2 = Fabricate(:queue_item, queue_position: 2, user: authenticated_user, video: video2)
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2.5}, {id: item2.id, queue_position: 1}]
           expect(response).to redirect_to my_queue_path
         end  

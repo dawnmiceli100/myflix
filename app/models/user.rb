@@ -6,4 +6,13 @@ class User < ActiveRecord:: Base
   validates :email, uniqueness: true
 
   has_secure_password validations: false
+
+  def reorder_queue_items
+    new_position = 1
+    queue_items.each do |item|
+      item.queue_position = new_position
+      item.save
+      new_position += 1
+    end
+  end 
 end
