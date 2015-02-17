@@ -3,9 +3,8 @@ require 'spec_helper'
 describe QueueItemsController do 
   context "with authenticated user" do 
 
-    let(:authenticated_user) { Fabricate(:user) } 
     before do
-      session[:user_id] = authenticated_user.id 
+      set_authenticated_user
     end 
 
     describe "GET index" do
@@ -144,31 +143,29 @@ describe QueueItemsController do
   end 
 
   context "with unauthenticated user" do
-    it "redirects to sign in page for index action" do
-      get :index 
-      expect(response).to redirect_to sign_in_path 
+  
+    describe "GET index" do
+      it_behaves_like "redirect_for_unauthenticated_user" do
+        let(:action) { get:index }
+      end  
     end  
 
-    it "redirects to sign in page for create action" do
-      video = Fabricate(:video)
-      item = Fabricate(:queue_item, video: video)
-      delete :destroy, id: item.id  
-      expect(response).to redirect_to sign_in_path 
-    end  
+    describe "DELETE destroy" do
+      it_behaves_like "redirect_for_unauthenticated_user" do
+        let(:action) { delete :destroy, id: 1 }  
+      end 
+    end   
 
-    it "redirects to sign in page for destroy action" do
-      video = Fabricate(:video)
-      post :create, queue_item: { queue_position: nil }, video_id: video.id
-      expect(response).to redirect_to sign_in_path 
-    end  
+    describe "POST create" do
+      it_behaves_like "redirect_for_unauthenticated_user" do
+        let(:action) { post :create, queue_item: { queue_position: nil }, video_id: 1 }
+      end 
+    end   
 
-    it "redirects to sign in page for update_queue action" do
-      video1 = Fabricate(:video)
-      video2 = Fabricate(:video)
-      item1 = Fabricate(:queue_item, queue_position: 1, video: video1)
-      item2 = Fabricate(:queue_item, queue_position: 2, video: video2)
-      post :update_queue, queue_items: [{id: item1.id, queue_position: 2}, {id: item2.id, queue_position: 1}]
-      expect(response).to redirect_to sign_in_path 
+    describe "POST update_queue" do
+      it_behaves_like "redirect_for_unauthenticated_user" do
+        let(:action) { post :update_queue, queue_items: [{id: 1, queue_position: 2}, {id: 2, queue_position: 1}] }
+      end  
     end  
   end       
 end

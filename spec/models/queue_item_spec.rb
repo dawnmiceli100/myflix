@@ -10,7 +10,8 @@ describe QueueItem do
   describe '#video_title' do
     it "returns the title of the video associated with the queue_item" do
       video = Fabricate(:video, title: "Mary Poppins")
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.video_title).to eq("Mary Poppins")
     end  
   end 
@@ -64,7 +65,8 @@ describe QueueItem do
     it "returns the name of the category of the video associated with the queue_item" do
       category = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: category)
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.category_name).to eq("Dramas")
     end  
   end 
@@ -73,7 +75,8 @@ describe QueueItem do
     it "returns the category of the video associated with the queue_item" do
       dramas = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: dramas)
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.category).to eq(dramas)
     end  
   end       

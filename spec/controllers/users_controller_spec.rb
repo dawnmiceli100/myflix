@@ -18,7 +18,7 @@ describe UsersController do
       end  
 
       it "creates a User record" do
-        expect(User.first.full_name).to eq("Jane Doe") 
+        expect(User.last.full_name).to eq("Jane Doe") 
       end
       
       it "redirects to sign_in_path" do
@@ -27,12 +27,13 @@ describe UsersController do
     end  
 
     context "with invalid input" do
+      let(:initial_user_count) { User.count }
       before do
         post :create, user: { full_name: "", email: "jane@example.com", password: "password"}
       end  
 
       it "does not create a User record" do
-        expect(User.count).to eq 0
+        expect(User.count).to eq initial_user_count 
       end  
 
       it "sets the @user variable" do
