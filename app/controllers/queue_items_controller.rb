@@ -19,8 +19,10 @@ class QueueItemsController < ApplicationController
 
   def destroy
     item = QueueItem.find(params[:id])
+    title = item.video.title
     item.destroy if item.user_id == current_user.id
     current_user.reorder_queue_items
+    flash[:info] = "#{title} has been removed from your queue."
     redirect_to my_queue_path 
   end 
 
@@ -29,9 +31,10 @@ class QueueItemsController < ApplicationController
       update_queue_items
       current_user.reorder_queue_items
     rescue ActiveRecord::RecordInvalid
-      flash[:danger] = "One or more position numbers are invalid."
-    end 
+      flash[:danger] = "One or more position numbers are invalid."  
+    else
       flash[:success] = "Your queue has been updated."  
+    end 
     redirect_to my_queue_path
   end  
 
