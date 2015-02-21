@@ -22,4 +22,8 @@ class Video < ActiveRecord::Base
       rating = 0   
     end
   end 
+
+  def in_users_queue?(user)
+    QueueItem.where({ video_id: self.id, user_id: user.id }).exists?
+  end  
 end

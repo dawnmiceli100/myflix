@@ -64,5 +64,20 @@ describe Video do
       expect(superman.average_rating).to eq(superman.reviews.average(:rating).round(1))
       #expect(superman.average_rating).to eq(((review1.rating + review2.rating) / 2).round(1))
     end
-  end          
+  end  
+
+  describe "#in_users_queue?" do
+    it "returns true if the video is in the user's queue" do
+      video = Fabricate(:video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, video_id: video.id, user_id: user.id)
+      expect(video.in_users_queue?(user)).to be true
+    end
+    
+    it "returns false if the video is not in the user's queue" do
+      video = Fabricate(:video)
+      user = Fabricate(:user)
+      expect(video.in_users_queue?(user)).to be false
+    end  
+  end        
 end
