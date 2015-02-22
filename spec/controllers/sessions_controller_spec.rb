@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SessionsController do 
   context "user is signed in" do
     before do
-      session[:user_id] = Fabricate(:user).id
+      set_authenticated_user
     end  
 
     describe "GET new" do

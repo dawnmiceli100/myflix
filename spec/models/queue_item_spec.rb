@@ -4,11 +4,13 @@ describe QueueItem do
   it { should belong_to(:user) }
   it { should belong_to(:video) }
   it { should validate_uniqueness_of(:video_id).scoped_to(:user_id) }
+  it { should validate_numericality_of(:queue_position).only_integer }
 
   describe '#video_title' do
     it "returns the title of the video associated with the queue_item" do
       video = Fabricate(:video, title: "Mary Poppins")
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.video_title).to eq("Mary Poppins")
     end  
   end 
@@ -30,11 +32,40 @@ describe QueueItem do
     end  
   end 
 
+  describe "rating=" do
+    it "updates the rating for the review if it exists" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      review = Fabricate(:review, rating: 3, user: user, video: video)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 1
+      expect(Review.first.rating).to eq(1)
+    end
+    
+    it "creates a new review with the rating only (no body), if the review exists" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = 1
+      expect(Review.first.rating).to eq(1)
+    end
+
+    it "updates the rating to nil if the blank rating is selected" do
+      video = Fabricate(:video, title: "Mary Poppins")
+      user = Fabricate(:user)
+      review = Fabricate(:review, rating: 3, user: user, video: video)
+      queue_item = Fabricate(:queue_item, video: video, user: user)
+      queue_item.rating = nil
+      expect(Review.first.rating).to be_nil
+    end 
+  end  
+
   describe '#category_name' do
     it "returns the name of the category of the video associated with the queue_item" do
       category = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: category)
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.category_name).to eq("Dramas")
     end  
   end 
@@ -43,7 +74,8 @@ describe QueueItem do
     it "returns the category of the video associated with the queue_item" do
       dramas = Fabricate(:category, name: "Dramas")
       video = Fabricate(:video, category: dramas)
-      queue_item = Fabricate(:queue_item, video: video)
+      user = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: user, video: video)
       expect(queue_item.category).to eq(dramas)
     end  
   end       
