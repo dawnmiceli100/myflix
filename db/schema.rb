@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150210155055) do
+ActiveRecord::Schema.define(version: 20150311153000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(version: 20150210155055) do
     t.integer  "queue_position"
     t.integer  "user_id"
     t.integer  "video_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "relationships", force: true do |t|
+    t.integer  "follower_id"
+    t.integer  "followed_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
