@@ -39,10 +39,6 @@ feature "the my queue functionality" do
     
   end
 
-  def link_to_video(video)
-    find("a[href='/videos/#{video.id}']").click
-  end 
-
   def change_queue_position(video, position)
     find("input[data-video-id='#{video.id}']").set(position) 
   end 

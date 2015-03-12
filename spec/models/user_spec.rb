@@ -14,11 +14,11 @@ describe User do
 
     it "returns true if the user follows the other user" do
       Fabricate(:relationship, follower: bob, followed: jane)
-      expect(bob.follows?(jane)).to be_true
+      expect(bob.follows?(jane)).to be_truthy
     end  
 
     it "returns false if the user does not follow the other user" do
-      expect(bob.follows?(jane)).to be_false
+      expect(bob.follows?(jane)).to be_falsey
     end 
   end   
 end
