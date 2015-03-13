@@ -2,6 +2,23 @@ require 'spec_helper'
 
 describe UsersController do 
 
+  describe 'GET show' do
+    context "with authenticated user" do
+      before { set_authenticated_user }
+
+      it "sets the @user variable" do
+        get :show, id: authenticated_user.id
+        expect(assigns(:user).full_name).to eq(authenticated_user.full_name)
+      end 
+    end 
+
+    context "with unauthenticated user" do
+      it_behaves_like "redirect_for_unauthenticated_user" do
+        let(:action) { get :show, id:('') }
+      end  
+    end      
+  end  
+
   describe 'GET new' do
     it "sets the @user variable when the input is valid" do
       get :new

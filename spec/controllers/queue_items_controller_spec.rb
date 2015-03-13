@@ -146,7 +146,7 @@ describe QueueItemsController do
   
     describe "GET index" do
       it_behaves_like "redirect_for_unauthenticated_user" do
-        let(:action) { get:index }
+        let(:action) { get :index }
       end  
     end  
 
