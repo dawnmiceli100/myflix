@@ -41,6 +41,23 @@ describe UsersController do
       it "redirects to sign_in_path" do
         expect(response).to redirect_to sign_in_path
       end
+
+      it "sends out the welcome email" do
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        expect(ActionMailer::Base.deliveries).not_to be_blank  
+      end 
+
+      it "sends the welcome email to the correct user" do
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        email = ActionMailer::Base.deliveries.last
+        expect(email.to).to eq(["jane@example.com"])    
+      end 
+
+      it "sends the welcome email with the right content" do
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        email = ActionMailer::Base.deliveries.last
+        expect(email.body).to include("Congratulations")    
+      end 
     end  
 
     context "with invalid input" do
@@ -60,7 +77,14 @@ describe UsersController do
 
       it "renders the new template" do
         expect(response).to render_template('new')
-      end  
-    end  
+      end 
+
+      it "does not send out the welcome email" do
+        expect {
+          post :create, user: { full_name: "", email: "jane@example.com", password: "password" }
+        }.to change { ActionMailer::Base.deliveries.count }.by 0    
+      end 
+    end 
+
   end   
 end
