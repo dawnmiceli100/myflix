@@ -20,5 +20,41 @@ describe User do
     it "returns false if the user does not follow the other user" do
       expect(bob.follows?(jane)).to be_falsey
     end 
-  end   
+  end 
+
+  describe "#initiate_password_reset" do
+    let(:jane) { Fabricate(:user) }
+
+    after { ActionMailer::Base.deliveries.clear }
+
+    it "sets the reset_token column" do
+      column = :reset_token
+      jane.initiate_password_reset
+      expect(User.first.reset_token).not_to be_blank
+    end 
+
+    it "sets the reset_sent_at column" do
+      column = :reset_token
+      jane.initiate_password_reset
+      expect(User.first.reset_sent_at).not_to be_blank
+    end  
+
+    it "sends out the reset password email" do
+      jane.initiate_password_reset
+      expect(ActionMailer::Base.deliveries).not_to be_blank 
+    end 
+
+    it "sends the reset password email to the correct user" do
+      jane.initiate_password_reset
+      email = ActionMailer::Base.deliveries.last
+      expect(email.to).to eq([jane.email])    
+    end 
+
+    it "sends the reset password email with the right content" do
+      jane.initiate_password_reset
+      email = ActionMailer::Base.deliveries.last
+      expect(email.body).to include("Click")    
+    end 
+
+  end  
 end

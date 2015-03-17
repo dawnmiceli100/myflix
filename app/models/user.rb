@@ -6,7 +6,9 @@ class User < ActiveRecord:: Base
   has_many :following_relationships, class_name: "Relationship", foreign_key: "follower_id"
   has_many :followed_by_relationships, class_name: "Relationship", foreign_key: "followed_id"
   
-  validates_presence_of :email, :password, :full_name
+  validates_presence_of :email
+  validates_presence_of :password, on: :create
+  validates_presence_of :full_name, on: :create
   validates :email, uniqueness: true
 
   has_secure_password validations: false
@@ -19,9 +21,20 @@ class User < ActiveRecord:: Base
 
   def follows?(another_user)
     following_relationships.map{ |relationship| relationship.followed }.include?(another_user)  
-  end  
+  end 
 
   def can_follow?(another_user)
     !(self.follows?(another_user) || another_user == self)
-  end  
+  end
+
+  def initiate_password_reset
+    generate_token(:reset_token)
+    self.reset_sent_at = Time.zone.now
+    save!
+    AppMailer.reset_password(self).deliver
+  end 
+
+  def generate_token(column) 
+    self[column] = SecureRandom.urlsafe_base64
+  end    
 end
