@@ -31,8 +31,10 @@ describe UsersController do
 
     context "with valid input" do
       before do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
       end  
+
+      after { ActionMailer::Base.deliveries.clear }
 
       it "creates a User record" do
         expect(User.last.full_name).to eq("Jane Doe") 
@@ -43,27 +45,27 @@ describe UsersController do
       end
 
       it "sends out the welcome email" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
         expect(ActionMailer::Base.deliveries).not_to be_blank  
       end 
 
       it "sends the welcome email to the correct user" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
         email = ActionMailer::Base.deliveries.last
         expect(email.to).to eq(["jane@example.com"])    
       end 
 
       it "sends the welcome email with the right content" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password"}
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
         email = ActionMailer::Base.deliveries.last
-        expect(email.body).to include("Congratulations")    
+        expect(email.body).to include("Jane Doe")    
       end 
     end  
 
     context "with invalid input" do
       let(:initial_user_count) { User.count }
       before do
-        post :create, user: { full_name: "", email: "jane@example.com", password: "password"}
+        post :create, user: { full_name: "", email: "jane@example.com", password: "password" }
       end  
 
       it "does not create a User record" do
@@ -82,7 +84,7 @@ describe UsersController do
       it "does not send out the welcome email" do
         expect {
           post :create, user: { full_name: "", email: "jane@example.com", password: "password" }
-        }.to change { ActionMailer::Base.deliveries.count }.by 0    
+        }.not_to change { ActionMailer::Base.deliveries.count }    
       end 
     end 
 

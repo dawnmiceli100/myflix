@@ -25,6 +25,8 @@ describe User do
   describe "#initiate_password_reset" do
     let(:jane) { Fabricate(:user) }
 
+    after { ActionMailer::Base.deliveries.clear }
+
     it "sets the reset_token column" do
       column = :reset_token
       jane.initiate_password_reset
@@ -39,7 +41,7 @@ describe User do
 
     it "sends out the reset password email" do
       jane.initiate_password_reset
-      expect(ActionMailer::Base.deliveries).not_to be_blank  
+      expect(ActionMailer::Base.deliveries).not_to be_blank 
     end 
 
     it "sends the reset password email to the correct user" do
@@ -52,6 +54,7 @@ describe User do
       jane.initiate_password_reset
       email = ActionMailer::Base.deliveries.last
       expect(email.body).to include("Click")    
-    end  
+    end 
+
   end  
 end
