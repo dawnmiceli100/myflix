@@ -22,6 +22,8 @@ Myflix::Application.routes.draw do
 
   post 'update_queue', to: 'queue_items#update_queue'
 
+  resources :reset_passwords, only: [:new, :create, :edit, :update]
+  
   get '/register', to: "users#new"
 
   get '/sign-in', to: "sessions#new"
