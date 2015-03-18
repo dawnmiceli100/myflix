@@ -34,7 +34,6 @@ describe User do
     end 
 
     it "sets the reset_sent_at column" do
-      column = :reset_token
       jane.initiate_password_reset
       expect(User.first.reset_sent_at).not_to be_blank
     end  
@@ -53,7 +52,7 @@ describe User do
     it "sends the reset password email with the right content" do
       jane.initiate_password_reset
       email = ActionMailer::Base.deliveries.last
-      expect(email.body).to include("Click")    
+      expect(email.body).to include(jane.reset_token)    
     end 
 
   end  

@@ -13,14 +13,14 @@ describe ResetPasswordsController do
     end  
 
     context "with blank or invalid email address" do
-      it "renders the new page" do
+      it "renders the email sent page" do
         post :create, email: 'bob@example.com'
-        expect(response).to render_template('new') 
+        expect(response).to render_template('email_sent') 
       end 
 
-      it "sets the danger message" do
+      it "does not sets the danger message" do
         post :create, email: 'bob@example.com'
-        expect(flash[:danger]).not_to be_blank
+        expect(flash[:danger]).to be_blank
       end  
     end  
   end 

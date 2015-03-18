@@ -1,27 +1,19 @@
 class ResetPasswordsController < ApplicationController
   
-  def new
-  end
-
   def create
-    user = User.where(email: params[:email]).first
-    if user
-      user.initiate_password_reset
-      render :email_sent
-    else 
-      flash.now[:danger] = "The email address you entered is not valid."
-      render :new
-    end 
+    user = User.find_by(email: params[:email])
+    user.initiate_password_reset if user
+    render :email_sent
   end 
 
   def edit
-    @user = User.find_by_reset_token(params[:id])
+    @user = User.find_by(reset_token: params[:id])
   end
 
   def update
     @user = User.find(params[:id])
     if params[:user][:password].blank?
-      flash[:danger] = "Your password can't be blank."
+      flash.now[:danger] = "Your password can't be blank."
       render :edit 
     elsif @user.reset_sent_at < 2.hours.ago
       flash[:danger] = "Your password reset has expired." 
@@ -37,6 +29,5 @@ class ResetPasswordsController < ApplicationController
   def user_params
     params.require(:user).permit(:email, :password, :full_name)
   end  
-
 
 end
