@@ -25,22 +25,45 @@ describe UsersController do
       expect(assigns(:user)).to be_new_record
       expect(assigns(:user)).to be_instance_of(User)
     end
-  end  
+  end 
+
+  describe "GET new_with_invitation_token" do
+    it "sets the email of @user with the invitee's email" do
+      invitation = Fabricate(:invitation)
+      get :new_with_invitation_token, token: invitation.token
+      expect(assigns(:user).email).to eq(invitation.invitee_email)
+    end
+
+    it "sets @invitation_token" do
+      invitation = Fabricate(:invitation)
+      get :new_with_invitation_token, token: invitation.token
+      expect(assigns(:invitation_token)).to eq(invitation.token)
+    end  
+ 
+    it "renders the new template" do
+      invitation = Fabricate(:invitation)
+      get :new_with_invitation_token, token: invitation.token
+      expect(response).to render_template('new')
+    end  
+    
+    it "redirects to expired token page if token is invalid" do
+      get :new_with_invitation_token, token: 'xxx'
+      expect(response).to redirect_to expired_token_path
+    end  
+  end   
 
   describe "POST create" do
 
     context "with valid input" do
-      before do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
-      end  
-
       after { ActionMailer::Base.deliveries.clear }
 
       it "creates a User record" do
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
         expect(User.last.full_name).to eq("Jane Doe") 
       end
-      
+
       it "redirects to sign_in_path" do
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
         expect(response).to redirect_to sign_in_path
       end
 
@@ -60,6 +83,29 @@ describe UsersController do
         email = ActionMailer::Base.deliveries.last
         expect(email.body).to include("Jane Doe")    
       end 
+
+      context "with invitation" do
+        let(:bob) { Fabricate(:user) }
+        let(:invitation) { Fabricate(:invitation, inviter: bob, invitee_name: "Jane", invitee_email: "jane@example.com") }
+        
+        before do
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, invitation_token: invitation.token
+        end  
+
+        let(:jane) { User.find_by(email: "jane@example.com") }
+
+        it "adds the relationship where the user follows the inviter" do 
+          expect(jane.follows?(bob)).to be_truthy
+        end 
+
+        it "adds the relationship where the inviter follows the user" do 
+          expect(bob.follows?(jane)).to be_truthy
+        end 
+
+        it "expires the invitation" do
+          expect(Invitation.first.token).to be_nil
+        end  
+      end  
     end  
 
     context "with invalid input" do
@@ -87,6 +133,5 @@ describe UsersController do
         }.not_to change { ActionMailer::Base.deliveries.count }    
       end 
     end 
-
   end   
 end

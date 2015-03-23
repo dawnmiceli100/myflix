@@ -6,7 +6,7 @@ feature "the my queue functionality" do
     video1 = Fabricate(:video, small_cover_url: 'video1small.jpg', category: dramas)
     video2 = Fabricate(:video, small_cover_url: 'video2small.jpg', category: dramas) 
     video3 = Fabricate(:video, small_cover_url: 'video3small.jpg', category: dramas) 
-    jane = User.create(:email => 'janesmith@example.com', :password => 'jane', :full_name => 'jane smith') 
+    jane = User.create(email: 'janesmith@example.com', password: 'jane', full_name: 'jane smith') 
 
     sign_in(jane)
 
