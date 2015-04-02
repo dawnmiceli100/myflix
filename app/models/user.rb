@@ -1,4 +1,6 @@
 class User < ActiveRecord:: Base
+  include Tokenable
+
   has_many :reviews, -> { order(created_at: :desc) }
   has_many :queue_items, -> { order(:queue_position) }
   has_many :invitations, foreign_key: "inviter_id"
@@ -38,8 +40,5 @@ class User < ActiveRecord:: Base
     save!
     AppMailer.reset_password(self).deliver
   end 
-
-  def generate_token(column) 
-    self[column] = SecureRandom.urlsafe_base64
-  end    
+ 
 end
