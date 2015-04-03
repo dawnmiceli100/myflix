@@ -1,6 +1,9 @@
 class User < ActiveRecord:: Base
+  include Tokenable
+
   has_many :reviews, -> { order(created_at: :desc) }
   has_many :queue_items, -> { order(:queue_position) }
+  has_many :invitations, foreign_key: "inviter_id"
 
   #self join through relationships
   has_many :following_relationships, class_name: "Relationship", foreign_key: "follower_id"
@@ -27,14 +30,15 @@ class User < ActiveRecord:: Base
     !(self.follows?(another_user) || another_user == self)
   end
 
+  def will_follow(another_user)
+    following_relationships.create(followed: another_user) if can_follow?(another_user)
+  end  
+
   def initiate_password_reset
     generate_token(:reset_token)
     self.reset_sent_at = Time.zone.now
     save!
     AppMailer.reset_password(self).deliver
   end 
-
-  def generate_token(column) 
-    self[column] = SecureRandom.urlsafe_base64
-  end    
+ 
 end

@@ -5,3 +5,9 @@ shared_examples "redirect_for_unauthenticated_user" do
     expect(response).to redirect_to sign_in_path
   end   
 end
+
+shared_examples "tokenable" do
+  it "sets the random token" do
+    expect(object[token_column]).to be_present
+  end  
+end  

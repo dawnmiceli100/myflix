@@ -22,35 +22,63 @@ describe User do
     end 
   end 
 
+  describe "#can_follow?" do
+    let(:jane) { Fabricate(:user) }
+    let(:bob) { Fabricate(:user) } 
+
+    it "returns true if the user does not follow another user" do
+      expect(bob.can_follow?(jane)).to be_truthy
+    end
+    
+    it "returns false if the user already follows another user" do
+      Fabricate(:relationship, follower: bob, followed: jane)
+      expect(bob.can_follow?(jane)).to be_falsey
+    end  
+
+    it "returns false if the user tries to follow themself" do
+      expect(bob.can_follow?(bob)).to be_falsey
+    end  
+  end  
+
+  describe "#will_follow" do
+    let(:jane) { Fabricate(:user) }
+    let(:bob) { Fabricate(:user) } 
+
+    it "sets the user to follow another user" do
+      expect(bob.will_follow(jane)).to be_truthy
+    end
+    
+    it "does not set the user to follow itself" do
+      expect(bob.will_follow(bob)).to be_falsey
+    end  
+  end  
+
   describe "#initiate_password_reset" do
     let(:jane) { Fabricate(:user) }
 
+    before { jane.initiate_password_reset }
+
     after { ActionMailer::Base.deliveries.clear }
 
-    it "sets the reset_token column" do
-      column = :reset_token
-      jane.initiate_password_reset
-      expect(User.first.reset_token).not_to be_blank
+    it_behaves_like "tokenable" do
+      let(:token_column) { :reset_token }
+      let(:object) { User.first }
     end 
 
     it "sets the reset_sent_at column" do
-      jane.initiate_password_reset
       expect(User.first.reset_sent_at).not_to be_blank
     end  
 
     it "sends out the reset password email" do
-      jane.initiate_password_reset
       expect(ActionMailer::Base.deliveries).not_to be_blank 
     end 
 
     it "sends the reset password email to the correct user" do
-      jane.initiate_password_reset
       email = ActionMailer::Base.deliveries.last
       expect(email.to).to eq([jane.email])    
     end 
 
     it "sends the reset password email with the right content" do
-      jane.initiate_password_reset
       email = ActionMailer::Base.deliveries.last
       expect(email.body).to include(jane.reset_token)    
     end 

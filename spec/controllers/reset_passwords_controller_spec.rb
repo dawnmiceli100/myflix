@@ -18,7 +18,7 @@ describe ResetPasswordsController do
         expect(response).to render_template('email_sent') 
       end 
 
-      it "does not sets the danger message" do
+      it "does not set the danger message" do
         post :create, email: 'bob@example.com'
         expect(flash[:danger]).to be_blank
       end  
