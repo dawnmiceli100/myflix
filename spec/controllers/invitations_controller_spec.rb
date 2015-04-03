@@ -50,7 +50,7 @@ describe InvitationsController do
         
         it "does not send the invitation" do
           expect {
-          post :create, invitation: { invitee_name: "Jane Doe", invitee_email: "janedoe@example.com"}
+            post :create, invitation: { invitee_name: "Jane Doe", invitee_email: "janedoe@example.com"}
           }.not_to change { ActionMailer::Base.deliveries.count }  
         end 
 

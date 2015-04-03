@@ -45,7 +45,6 @@ feature "the invite a friend functionality" do
     fill_in 'Email Address', with: "bobmiller@example.com"
     fill_in 'Password', with: 'bob'
     click_button 'Sign in' 
-    expect(page).to have_content 'You have successfully signed in.' 
   end 
 
   def friend_is_following_inviter(inviter)

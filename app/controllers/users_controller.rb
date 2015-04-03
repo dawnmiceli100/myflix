@@ -32,6 +32,8 @@ class UsersController < ApplicationController
     end    
   end 
 
+  private 
+  
   def set_relationships
     invitation = Invitation.find_by(token: params[:invitation_token])
     @inviter = User.find(invitation.inviter_id)
