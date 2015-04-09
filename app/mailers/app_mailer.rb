@@ -1,5 +1,6 @@
 class AppMailer < ActionMailer::Base
-  default from: ENV["gmail_username"]
+  #default from: ENV["gmail_username"]
+  default from: 'dawnmiceli100@gmail.com'
 
   def welcome_new_user(user)
     @user = user
