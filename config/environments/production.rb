@@ -1,4 +1,5 @@
 Myflix::Application.configure do
+  config.action_dispatch.show_exceptions = false
 
   config.cache_classes = true
   config.eager_load = true

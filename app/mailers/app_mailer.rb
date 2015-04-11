@@ -5,7 +5,7 @@ class AppMailer < ActionMailer::Base
     @user = user
     if Rails.env.staging?
       email = ENV["staging_email"]
-    else  
+    else 
       email = user.email
     end  
     mail to: email, subject: "Welcome to MyFlix"
