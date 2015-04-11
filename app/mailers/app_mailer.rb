@@ -3,16 +3,32 @@ class AppMailer < ActionMailer::Base
 
   def welcome_new_user(user)
     @user = user
-    mail to: user.email, subject: "Welcome to MyFlix"
+    if Rails.env.staging?
+      email = ENV["staging_email"]
+    else  
+      email = user.email
+    end  
+    mail to: email, subject: "Welcome to MyFlix"
   end
 
   def reset_password(user)
     @user = user
-    mail to: user.email, subject: "Password reset instructions"
+    if Rails.env.staging?
+      email = ENV["staging_email"]
+    else  
+      email = user.email
+    end  
+    mail to: email, subject: "Password reset instructions"
   end
 
   def invite_friend(invitation)
     @invitation = invitation
-    mail to: invitation.invitee_email, subject: "Invitation to join MyFlix"
-  end  
+    if Rails.env.staging?
+      email = ENV["staging_email"]
+    else  
+      email = invitation.invitee_email
+    end  
+    mail to: email, subject: "Invitation to join MyFlix"
+  end 
+
 end
