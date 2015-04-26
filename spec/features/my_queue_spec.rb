@@ -3,9 +3,9 @@ require 'spec_helper'
 feature "the my queue functionality" do 
   scenario "the user adds videos to their queue and reorders them" do
     dramas = Fabricate(:category, name: "Dramas") 
-    video1 = Fabricate(:video, small_cover_url: 'video1small.jpg', category: dramas)
-    video2 = Fabricate(:video, small_cover_url: 'video2small.jpg', category: dramas) 
-    video3 = Fabricate(:video, small_cover_url: 'video3small.jpg', category: dramas) 
+    video1 = Fabricate(:video, small_cover_art: 'video1small.jpg', category: dramas)
+    video2 = Fabricate(:video, small_cover_art: 'video2small.jpg', category: dramas) 
+    video3 = Fabricate(:video, small_cover_art: 'video3small.jpg', category: dramas) 
     jane = User.create(email: 'janesmith@example.com', password: 'jane', full_name: 'jane smith') 
 
     sign_in(jane)
