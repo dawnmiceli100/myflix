@@ -45,7 +45,7 @@ describe Admin::VideosController do
           end
 
           it "sets the success message when the video is saved" do
-            expect(flash[:success]).not_to be_blank
+            expect(flash[:success]).to be_present
           end 
         end 
 
@@ -59,7 +59,7 @@ describe Admin::VideosController do
           end  
 
           it "sets the danger message when there are validation errors" do
-            expect(flash[:danger]).not_to be_blank
+            expect(flash[:danger]).to be_present
           end  
 
           it "sets the @video variable" do
@@ -73,7 +73,10 @@ describe Admin::VideosController do
 
       context "with non-admin-user" do 
         it_behaves_like "redirect_for_non_admin_user" do
-          let(:action)  { post :create, video: { title: "Mary Poppins", description: "A Classic.", category_id: category.id } }
+          let(:action) do
+            post :create, video: { title: "Mary Poppins", description: "A Classic.",
+            category_id: category.id } 
+          end  
         end    
       end
     end
