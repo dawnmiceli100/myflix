@@ -6,6 +6,13 @@ shared_examples "redirect_for_unauthenticated_user" do
   end   
 end
 
+shared_examples "redirect_for_non_admin_user" do 
+  it "redirects to the home page" do
+    action
+    expect(response).to redirect_to home_path
+  end   
+end
+
 shared_examples "tokenable" do
   it "sets the random token" do
     expect(object[token_column]).to be_present

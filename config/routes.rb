@@ -9,6 +9,10 @@ Myflix::Application.routes.draw do
     end
 
     resources :reviews, only: [:create]
+  end 
+
+  namespace :admin do
+    resources :videos, only: [:new, :create] 
   end    
 
   resources :categories, only: [:show]
