@@ -3,6 +3,9 @@ class Video < ActiveRecord::Base
   has_many :queue_items
   
   belongs_to :category
+
+  mount_uploader :small_cover_art, SmallCoverUploader
+  mount_uploader :large_cover_art, LargeCoverUploader
   
   validates :title, presence: true
   validates :description, presence: true

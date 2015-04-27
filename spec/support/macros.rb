@@ -3,6 +3,12 @@ def set_authenticated_user
   session[:user_id] = authenticated_user.id 
 end 
 
+def set_admin_user(user=nil)
+  admin_user = (user || set_authenticated_user)
+  admin_user.admin = true
+  admin_user.save
+end  
+
 def clear_authenticated_user
   session[:user_id] = nil
 end 
