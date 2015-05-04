@@ -13,6 +13,19 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     
     if @user.save
+      Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+      token = params[:stripeToken]
+
+      begin
+        charge = Stripe::Charge.create(
+          :amount => 999, #
+          :currency => "usd",
+          :source => token,
+          :description => "1 month charge for #{@user.email}"
+        )
+      rescue Stripe::CardError => e
+        flash[:danger] = e.message
+      end
       AppMailer.delay.welcome_new_user(@user)
       set_relationships if params[:invitation_token].present?
       redirect_to sign_in_path
