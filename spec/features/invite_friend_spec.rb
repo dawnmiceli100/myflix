@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature "the invite a friend functionality" do 
-  scenario "the user invites a friend, the friend registers, the user and friend follow each other" do
+  scenario "the user invites a friend, the friend registers, the user and friend follow each other", js: true do
     inviter = Fabricate(:user)
     sign_in(inviter) 
 

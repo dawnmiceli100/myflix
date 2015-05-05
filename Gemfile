@@ -40,6 +40,7 @@ group :test do
   gem 'faker'
   gem 'capybara'
   gem 'capybara-email'
+  gem 'capybara-webkit'
   gem 'launchy'
   gem 'stripe-ruby-mock'
 end
