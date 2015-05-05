@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'stripe_mock'
 
 describe UsersController do 
 
@@ -55,31 +56,37 @@ describe UsersController do
   describe "POST create" do
 
     context "with valid input" do
-      after { ActionMailer::Base.deliveries.clear }
+      let(:stripe_helper) { StripeMock.create_test_helper }
+      let(:stripeToken) { stripe_helper.generate_card_token }
+      before { StripeMock.start}
+      after do
+        ActionMailer::Base.deliveries.clear
+        StripeMock.stop
+      end  
 
       it "creates a User record" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         expect(User.last.full_name).to eq("Jane Doe") 
       end
 
       it "redirects to sign_in_path" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         expect(response).to redirect_to sign_in_path
       end
 
       it "sends out the welcome email" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         expect(ActionMailer::Base.deliveries).not_to be_blank  
       end 
 
       it "sends the welcome email to the correct user" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         email = ActionMailer::Base.deliveries.last
         expect(email.to).to eq(["jane@example.com"])    
       end 
 
       it "sends the welcome email with the right content" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         email = ActionMailer::Base.deliveries.last
         expect(email.body).to include("Jane Doe")    
       end 
@@ -89,7 +96,7 @@ describe UsersController do
         let(:invitation) { Fabricate(:invitation, inviter: bob, invitee_name: "Jane", invitee_email: "jane@example.com") }
         
         before do
-          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, invitation_token: invitation.token
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, invitation_token: invitation.token, stripeToken: stripeToken
         end  
 
         let(:jane) { User.find_by(email: "jane@example.com") }
