@@ -38,6 +38,10 @@ feature "the invite a friend functionality" do
   def friend_registers
     fill_in 'Password', with: "bob"
     fill_in 'Full Name', with: "Bob Miller"
+    fill_in "Credit Card", with: '4242424242424242'
+    fill_in "CVC",      with: "123"
+    select "1 - January", from: "date_month"
+    select "2019", from: "date_year"
     click_button 'Sign Up'
   end 
 

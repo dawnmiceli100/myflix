@@ -41,6 +41,7 @@ group :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'launchy'
+  gem 'stripe-ruby-mock'
 end
 
 group :production, :staging do
