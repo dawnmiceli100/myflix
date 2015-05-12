@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'stripe_mock'
 
 describe UsersController do 
 
@@ -55,15 +54,15 @@ describe UsersController do
 
   describe "POST create" do
 
-    context "with valid input" do
-      let(:stripe_helper) { StripeMock.create_test_helper }
-      let(:stripeToken) { stripe_helper.generate_card_token }
-      before { StripeMock.start}
-      after do
-        ActionMailer::Base.deliveries.clear
-        StripeMock.stop
-      end  
-
+    context "with valid input and valid credit card" do
+      let(:stripeToken) { 'abc123' }
+      let(:charge) { double(:charge, successful?: true) }
+      before do
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+      end
+        
+      after { ActionMailer::Base.deliveries.clear }
+     
       it "creates a User record" do
         post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         expect(User.last.full_name).to eq("Jane Doe") 
@@ -115,11 +114,15 @@ describe UsersController do
       end  
     end  
 
-    context "with invalid input" do
+    context "with valid input, but invalid credit card" do
       let(:initial_user_count) { User.count }
+      let(:stripeToken) { 'abc123' }
+      let(:charge) { double(:charge, successful?: false, error_message: 'Your card was declined.') }
+      
       before do
-        post :create, user: { full_name: "", email: "jane@example.com", password: "password" }
-      end  
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+      end
 
       it "does not create a User record" do
         expect(User.count).to eq initial_user_count 
@@ -135,10 +138,47 @@ describe UsersController do
       end 
 
       it "does not send out the welcome email" do
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
         expect {
-          post :create, user: { full_name: "", email: "jane@example.com", password: "password" }
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         }.not_to change { ActionMailer::Base.deliveries.count }    
       end 
+
+      it "sets the danger message" do
+        expect(flash[:danger]).to be_present
+      end  
+    end
+
+    context "with invalid input" do
+      let(:initial_user_count) { User.count }
+      let(:stripeToken) { 'abc123' }
+
+      before do
+        post :create, user: { full_name: "", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+      end  
+
+      it "does not create a User record" do
+        expect(User.count).to eq initial_user_count 
+      end  
+
+      it "sets the @user variable" do
+        expect(assigns(:user)).to be_new_record
+        expect(assigns(:user)).to be_instance_of(User)
+      end   
+
+      it "renders the new template" do
+        expect(response).to render_template('new')
+      end 
+
+      it "does not send out the welcome email" do
+        expect {
+          post :create, user: { full_name: "", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+        }.not_to change { ActionMailer::Base.deliveries.count }    
+      end
+
+      it "does not create a charge" do
+        StripeWrapper::Charge.should_not_receive(:create)
+      end  
     end 
   end   
 end
