@@ -51,7 +51,7 @@ feature "the invite a friend functionality" do
     expect(page).to have_content 'Sign in'
     fill_in 'Email Address', with: "bobmiller@example.com"
     fill_in 'Password', with: "bob"
-    click_button 'Sign in' 
+    click_on 'Sign in' 
   end 
 
   def friend_signs_out
