@@ -126,13 +126,13 @@ describe QueueItemsController do
       context "with invalid input" do
         it "does not update any of the queue_positions of there is an error with any of them" do
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2}, {id: item2.id, queue_position: 1.5}]
-          expect(item1.reload.queue_position).to eq(1)
+          expect(item1.queue_position).to eq(1)
         end 
 
         it "sets the danger message" do
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2.5}, {id: item2.id, queue_position: 3}]
           expect(flash[:danger]).not_to be_blank
-      end  
+        end  
 
         it "redirects to my_queue page" do
           post :update_queue, queue_items: [{id: item1.id, queue_position: 2.5}, {id: item2.id, queue_position: 1}]

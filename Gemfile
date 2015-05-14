@@ -40,9 +40,11 @@ group :test do
   gem 'faker'
   gem 'capybara'
   gem 'capybara-email'
-  gem 'capybara-webkit'
   gem 'launchy'
-  gem 'stripe-ruby-mock'
+  gem 'webmock'
+  gem 'vcr'
+  gem 'selenium-webdriver'
+  gem 'poltergeist'
 end
 
 group :production, :staging do
