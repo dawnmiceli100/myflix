@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 feature "the invite a friend functionality" do 
-  scenario "the user invites a friend, the friend registers, the user and friend follow each other", js: true do
+  scenario "the user invites a friend, the friend registers, the user and friend follow each other", { js: true, vcr: true } do
     inviter = Fabricate(:user)
     sign_in(inviter) 
 
-    invite_friend_by_email
+    invite_friend_by_email(inviter)
 
+    click_link "Welcome, " + inviter.full_name
     click_link 'Sign Out'
 
     friend_clicks_link_in_email_invitation
@@ -14,7 +15,7 @@ feature "the invite a friend functionality" do
     friend_signs_in
     friend_is_following_inviter(inviter)
     
-    click_link 'Sign Out'
+    friend_signs_out
 
     sign_in(inviter)
     inviter_is_following_friend
@@ -22,7 +23,8 @@ feature "the invite a friend functionality" do
     clear_email  
   end
 
-  def invite_friend_by_email
+  def invite_friend_by_email(inviter)
+    click_link "Welcome, " + inviter.full_name
     click_link 'Invite a friend'
     fill_in "Friend's Name", with: "Bob"
     fill_in "Friend's Email Address", with: "bobmiller@example.com"
@@ -46,10 +48,16 @@ feature "the invite a friend functionality" do
   end 
 
   def friend_signs_in
+    expect(page).to have_content 'Sign in'
     fill_in 'Email Address', with: "bobmiller@example.com"
-    fill_in 'Password', with: 'bob'
-    click_button 'Sign in' 
+    fill_in 'Password', with: "bob"
+    click_on 'Sign in' 
   end 
+
+  def friend_signs_out
+    click_link "Welcome, Bob Miller"
+    click_link 'Sign Out'
+  end  
 
   def friend_is_following_inviter(inviter)
     click_link 'People'
