@@ -53,132 +53,56 @@ describe UsersController do
   end   
 
   describe "POST create" do
-
-    context "with valid input and valid credit card" do
+    context "with valid input" do
       let(:stripeToken) { 'abc123' }
-      let(:charge) { double(:charge, successful?: true) }
-      before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-      end
-        
-      after { ActionMailer::Base.deliveries.clear }
-     
-      it "creates a User record" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        expect(User.last.full_name).to eq("Jane Doe") 
-      end
 
-      it "redirects to sign_in_path" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        expect(response).to redirect_to sign_in_path
-      end
-
-      it "sends out the welcome email" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        expect(ActionMailer::Base.deliveries).not_to be_blank  
-      end 
-
-      it "sends the welcome email to the correct user" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        email = ActionMailer::Base.deliveries.last
-        expect(email.to).to eq(["jane@example.com"])    
-      end 
-
-      it "sends the welcome email with the right content" do
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        email = ActionMailer::Base.deliveries.last
-        expect(email.body).to include("Jane Doe")    
-      end 
-
-      context "with invitation" do
-        let(:bob) { Fabricate(:user) }
-        let(:invitation) { Fabricate(:invitation, inviter: bob, invitee_name: "Jane", invitee_email: "jane@example.com") }
-        
+      context "with successful registration" do
+        let(:registration) { double("registration", successful?: true) }
         before do
-          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, invitation_token: invitation.token, stripeToken: stripeToken
+          UserRegistration
+            .any_instance.should_receive(:register).and_return(registration)
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+        end
+
+        it "redirects to the sign in path" do
+          expect(response).to redirect_to sign_in_path
+        end
+        
+        it "sets the flash success message" do
+          expect(flash[:success]).to be_present
         end  
-
-        let(:jane) { User.find_by(email: "jane@example.com") }
-
-        it "adds the relationship where the user follows the inviter" do 
-          expect(jane.follows?(bob)).to be_truthy
-        end 
-
-        it "adds the relationship where the inviter follows the user" do 
-          expect(bob.follows?(jane)).to be_truthy
-        end 
-
-        it "expires the invitation" do
-          expect(Invitation.first.token).to be_nil
-        end  
-      end  
-    end  
-
-    context "with valid input, but invalid credit card" do
-      let(:initial_user_count) { User.count }
-      let(:stripeToken) { 'abc123' }
-      let(:charge) { double(:charge, successful?: false, error_message: 'Your card was declined.') }
-      
-      before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-        post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
       end
 
-      it "does not create a User record" do
-        expect(User.count).to eq initial_user_count 
-      end  
-
-      it "sets the @user variable" do
-        expect(assigns(:user)).to be_new_record
-        expect(assigns(:user)).to be_instance_of(User)
-      end  
-
-      it "renders the new template" do
-        expect(response).to render_template('new')
-      end 
-
-      it "does not send out the welcome email" do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-        expect {
+      context "with unsuccessful registration" do
+        let(:registration) { double("registration", successful?: false, error_message: "Your card was declined.") }
+        before do
+          UserRegistration.any_instance.should_receive(:register).and_return(registration)
           post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        }.not_to change { ActionMailer::Base.deliveries.count }    
-      end 
+        end
 
-      it "sets the danger message" do
-        expect(flash[:danger]).to be_present
-      end  
-    end
+        it "renders the new template" do
+          expect(response).to render_template('new')
+        end
+
+        it "sets the flash danger message" do
+          expect(flash[:danger]).to be_present
+        end 
+      end
+    end 
 
     context "with invalid input" do
-      let(:initial_user_count) { User.count }
-      let(:stripeToken) { 'abc123' }
-
       before do
-        post :create, user: { full_name: "", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-      end  
-
-      it "does not create a User record" do
-        expect(User.count).to eq initial_user_count 
-      end  
+        post :create, user: { full_name: "Jane Doe", email: "", password: "" }
+      end
 
       it "sets the @user variable" do
         expect(assigns(:user)).to be_new_record
         expect(assigns(:user)).to be_instance_of(User)
-      end   
+      end  
 
       it "renders the new template" do
         expect(response).to render_template('new')
-      end 
-
-      it "does not send out the welcome email" do
-        expect {
-          post :create, user: { full_name: "", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
-        }.not_to change { ActionMailer::Base.deliveries.count }    
-      end
-
-      it "does not create a charge" do
-        StripeWrapper::Charge.should_not_receive(:create)
       end  
-    end 
+    end     
   end   
 end

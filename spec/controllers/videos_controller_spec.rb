@@ -6,13 +6,13 @@ describe VideosController do
 
     describe "GET show" do
       it "sets the @video variable" do
-        video = Fabricate(:video)
+        video = Fabricate(:video).decorate
         get :show, id: video.id
         expect(assigns(:video)).to eq(video)
       end
 
       it "sets the @reviews variable" do
-        video = Fabricate(:video)
+        video = Fabricate(:video).decorate
         review1 = Fabricate(:review, video: video)
         review2 = Fabricate(:review, video: video)
         get :show, id: video.id
@@ -27,7 +27,6 @@ describe VideosController do
         expect(assigns(:videos)).to eq([seabiscuit])
       end
     end 
-
   end
 
   context "with unauthenticated user" do 
@@ -43,5 +42,4 @@ describe VideosController do
       end
     end      
   end
-
 end
