@@ -8,7 +8,7 @@ describe UserRegistration do
       let(:amount) { 999 } 
       let(:charge) { double(:charge, successful?: true) }
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
       end
         
       after { ActionMailer::Base.deliveries.clear }
@@ -67,7 +67,7 @@ describe UserRegistration do
       let(:charge) { double(:charge, successful?: false, error_message: 'Your card was declined.') }
       
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
       end
 
       it "does not create a User record" do
@@ -90,7 +90,7 @@ describe UserRegistration do
       amount = 999 
       charge = double(:charge, successful?: true) 
 
-      StripeWrapper::Charge.should_receive(:create).and_return(charge)
+      expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
       registration = UserRegistration.new(Fabricate.build(:user, email: "jane@example.com", password: "jane", full_name: "Jane Doe"), stripeToken, amount, nil).register
       expect(registration).to be_successful
     end 
@@ -99,7 +99,7 @@ describe UserRegistration do
       stripeToken ='abc123' 
       amount = 999 
       charge = double(:charge, successful?: false, error_message: 'Your card was declined.')
-      StripeWrapper::Charge.should_receive(:create).and_return(charge)
+      expect(StripeWrapper::Charge).to receive(:create).and_return(charge)
       registration = UserRegistration.new(Fabricate.build(:user, email: "jane@example.com", password: "jane", full_name: "Jane Doe"), stripeToken, amount, nil).register
       expect(registration).not_to be_successful
     end 

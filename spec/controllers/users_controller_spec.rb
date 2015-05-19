@@ -59,8 +59,7 @@ describe UsersController do
       context "with successful registration" do
         let(:registration) { double("registration", successful?: true) }
         before do
-          UserRegistration
-            .any_instance.should_receive(:register).and_return(registration)
+          UserRegistration.any_instance.should_receive(:register).and_return(registration)
           post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
         end
 
@@ -103,6 +102,6 @@ describe UsersController do
       it "renders the new template" do
         expect(response).to render_template('new')
       end  
-    end     
+    end  
   end   
 end
