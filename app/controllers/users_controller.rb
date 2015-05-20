@@ -11,24 +11,14 @@ class UsersController < ApplicationController
   
   def create
     @user = User.new(user_params)
-    
     if @user.valid?
-      card_token = params[:stripeToken]
       amount = 999
-
-      charge = StripeWrapper::Charge.create(
-        amount: amount, 
-        card: card_token,
-        description: "1 month charge for #{@user.email}"
-      )
-      if charge.successful?
-        @user.save
-        AppMailer.delay.welcome_new_user(@user)
-        set_relationships if params[:invitation_token].present?
+      registration = UserRegistration.new(@user, params[:stripeToken], amount, params[:invitation_token]).register
+      if registration.successful?
         flash[:success] = "You have successfully signed up for 1 month of MyFlix!"
         redirect_to sign_in_path 
       else
-        flash.now[:danger] = charge.error_message
+        flash.now[:danger] = registration.error_message
         render :new
       end  
     else
@@ -49,14 +39,6 @@ class UsersController < ApplicationController
 
   private 
   
-  def set_relationships
-    invitation = Invitation.find_by(token: params[:invitation_token])
-    @inviter = User.find(invitation.inviter_id)
-    @user.will_follow(@inviter)
-    @inviter.will_follow(@user)
-    invitation.update_column(:token, nil)
-  end  
-
   def user_params
     params.require(:user).permit(:email, :password, :full_name)
   end  

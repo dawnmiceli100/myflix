@@ -18,14 +18,6 @@ class Video < ActiveRecord::Base
     end  
   end  
 
-  def average_rating
-    if self.reviews.exists?
-      rating = reviews.average(:rating).round(1)
-    else
-      rating = 0   
-    end
-  end 
-
   def in_users_queue?(user)
     QueueItem.where({ video_id: self.id, user_id: user.id }).exists?
   end  
