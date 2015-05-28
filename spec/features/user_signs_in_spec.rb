@@ -3,7 +3,7 @@ require 'spec_helper'
 feature "the user sign in process" do 
   
   scenario "with valid input" do
-    jane = User.create(email: 'janesmith@example.com', password: 'jane', full_name: 'jane smith')
+    jane = User.create(email: 'janesmith@example.com', password: 'jane', full_name: 'jane smith', stripe_customer_id: 'CUST_1')
     sign_in(jane)
     expect(page).to have_content 'successfully'
   end  
