@@ -31,7 +31,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 28 May 2015 21:06:48 GMT
+      - Fri, 29 May 2015 22:07:51 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -49,7 +49,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_U18xVWR2RAGziHFt
+      - req_3c5lJXZd2snE7PzO
       Stripe-Version:
       - '2015-04-07'
       Strict-Transport-Security:
@@ -58,14 +58,14 @@ http_interactions:
       encoding: UTF-8
       string: |
         {
-          "id": "tok_167YDEKs0xJP6zPXEn6LampA",
+          "id": "tok_167vdrKs0xJP6zPXjKaQqDQu",
           "livemode": false,
-          "created": 1432847208,
+          "created": 1432937271,
           "used": false,
           "object": "token",
           "type": "card",
           "card": {
-            "id": "card_167YDEKs0xJP6zPXVrQeMvWo",
+            "id": "card_167vdrKs0xJP6zPXhZHk9tMh",
             "object": "card",
             "last4": "4242",
             "brand": "Visa",
@@ -90,13 +90,13 @@ http_interactions:
           "client_ip": "73.149.218.80"
         }
     http_version: 
-  recorded_at: Thu, 28 May 2015 21:06:48 GMT
+  recorded_at: Fri, 29 May 2015 22:07:51 GMT
 - request:
     method: post
     uri: https://api.stripe.com/v1/customers
     body:
       encoding: US-ASCII
-      string: source=tok_167YDEKs0xJP6zPXEn6LampA&plan=standard&email=janedoe%40example.com
+      string: source=tok_167vdrKs0xJP6zPXjKaQqDQu&plan=standard&email=janedoe%40example.com
     headers:
       Accept:
       - "*/*; q=0.5, application/xml"
@@ -122,7 +122,7 @@ http_interactions:
       Server:
       - nginx
       Date:
-      - Thu, 28 May 2015 21:06:49 GMT
+      - Fri, 29 May 2015 22:07:52 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -140,7 +140,7 @@ http_interactions:
       Cache-Control:
       - no-cache, no-store
       Request-Id:
-      - req_3NG6AR5YrflqcDB1
+      - req_tnpoaI8Mh37qGXYp
       Stripe-Version:
       - '2015-04-07'
       Strict-Transport-Security:
@@ -150,8 +150,8 @@ http_interactions:
       string: |
         {
           "object": "customer",
-          "created": 1432847209,
-          "id": "cus_6KCcAtUsNmajOL",
+          "created": 1432937272,
+          "id": "cus_6KapTSh2obXnqm",
           "livemode": false,
           "description": null,
           "email": "janedoe@example.com",
@@ -161,10 +161,10 @@ http_interactions:
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/customers/cus_6KCcAtUsNmajOL/subscriptions",
+            "url": "/v1/customers/cus_6KapTSh2obXnqm/subscriptions",
             "data": [
               {
-                "id": "sub_6KCc9L7XMf4Inp",
+                "id": "sub_6KapfSicK7VBOm",
                 "plan": {
                   "interval": "month",
                   "name": "Standard Plan",
@@ -180,12 +180,12 @@ http_interactions:
                   "statement_descriptor": null
                 },
                 "object": "subscription",
-                "start": 1432847209,
+                "start": 1432937272,
                 "status": "active",
-                "customer": "cus_6KCcAtUsNmajOL",
+                "customer": "cus_6KapTSh2obXnqm",
                 "cancel_at_period_end": false,
-                "current_period_start": 1432847209,
-                "current_period_end": 1435525609,
+                "current_period_start": 1432937272,
+                "current_period_end": 1435615672,
                 "ended_at": null,
                 "trial_start": null,
                 "trial_end": null,
@@ -205,10 +205,10 @@ http_interactions:
             "object": "list",
             "total_count": 1,
             "has_more": false,
-            "url": "/v1/customers/cus_6KCcAtUsNmajOL/sources",
+            "url": "/v1/customers/cus_6KapTSh2obXnqm/sources",
             "data": [
               {
-                "id": "card_167YDEKs0xJP6zPXVrQeMvWo",
+                "id": "card_167vdrKs0xJP6zPXhZHk9tMh",
                 "object": "card",
                 "last4": "4242",
                 "brand": "Visa",
@@ -229,12 +229,12 @@ http_interactions:
                 "address_zip_check": null,
                 "dynamic_last4": null,
                 "metadata": {},
-                "customer": "cus_6KCcAtUsNmajOL"
+                "customer": "cus_6KapTSh2obXnqm"
               }
             ]
           },
-          "default_source": "card_167YDEKs0xJP6zPXVrQeMvWo"
+          "default_source": "card_167vdrKs0xJP6zPXhZHk9tMh"
         }
     http_version: 
-  recorded_at: Thu, 28 May 2015 21:06:49 GMT
+  recorded_at: Fri, 29 May 2015 22:07:52 GMT
 recorded_with: VCR 2.9.3

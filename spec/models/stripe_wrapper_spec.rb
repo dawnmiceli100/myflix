@@ -79,6 +79,15 @@ describe StripeWrapper do
           expect(customer).to be_successful
           expect(customer.response.email).to eq('janedoe@example.com')
         end 
+
+        it "returns the stripe customer id", :vcr do
+          customer = StripeWrapper::Customer.create(
+            source: card_token,
+            email: 'janedoe@example.com'
+          )
+          expect(customer).to be_successful
+          expect(customer.response.id).to be_present
+        end 
       end 
 
       context "with invalid card" do
