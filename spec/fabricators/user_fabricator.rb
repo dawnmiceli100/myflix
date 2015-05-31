@@ -3,4 +3,5 @@ Fabricator(:user) do
   email { Faker::Internet.email } 
   password { Faker::Internet.password } 
   stripe_customer_id { Faker::Lorem.characters(10) }
+  locked { false }
 end

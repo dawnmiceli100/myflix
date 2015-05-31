@@ -31,4 +31,14 @@ class AppMailer < ActionMailer::Base
     mail to: email, subject: "Invitation to join MyFlix"
   end 
 
+  def notify_user_of_payment_failure(user)
+    @user = user
+    if Rails.env.staging?
+      email = ENV["staging_email"]
+    else 
+      email = user.email
+    end  
+    mail to: email, subject: "MyFlix payment failure"
+  end
+
 end

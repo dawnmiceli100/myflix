@@ -41,5 +41,9 @@ class User < ActiveRecord::Base
     save!
     AppMailer.reset_password(self).deliver
   end 
+
+  def lock!
+    self.locked = true
+  end  
  
 end
