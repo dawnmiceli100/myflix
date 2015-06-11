@@ -7,7 +7,7 @@ module StripeWrapper
       @status = status
     end
 
-    def self.create(options={})
+    def self.create(options = {})
       begin
         response = Stripe::Charge.create(
           amount: options[:amount], 
@@ -42,7 +42,7 @@ module StripeWrapper
       @status = status
     end
 
-    def self.create(options={})
+    def self.create(options = {})
       begin
         response = Stripe::Customer.create(
           source: options[:source],
