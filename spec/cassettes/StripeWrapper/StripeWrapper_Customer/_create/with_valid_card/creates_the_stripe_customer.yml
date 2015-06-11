@@ -1,0 +1,240 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/tokens
+    body:
+      encoding: US-ASCII
+      string: card[number]=4242424242424242&card[exp_month]=12&card[exp_year]=2017&card[cvc]=123
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.21.0
+      Authorization:
+      - Bearer sk_test_zOUkEznY8BwjQO74rsAc52ye
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.21.0","lang":"ruby","lang_version":"2.1.5 p273 (2014-11-13)","platform":"x86_64-darwin13.0","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Dawns-MacBook-Pro.local 13.4.0 Darwin Kernel Version 13.4.0: Wed Mar 18 16:20:14
+        PDT 2015; root:xnu-2422.115.14~1/RELEASE_X86_64 x86_64","hostname":"Dawns-MacBook-Pro.local"}'
+      Content-Length:
+      - '82'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Fri, 29 May 2015 22:07:51 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '748'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_3c5lJXZd2snE7PzO
+      Stripe-Version:
+      - '2015-04-07'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "id": "tok_167vdrKs0xJP6zPXjKaQqDQu",
+          "livemode": false,
+          "created": 1432937271,
+          "used": false,
+          "object": "token",
+          "type": "card",
+          "card": {
+            "id": "card_167vdrKs0xJP6zPXhZHk9tMh",
+            "object": "card",
+            "last4": "4242",
+            "brand": "Visa",
+            "funding": "credit",
+            "exp_month": 12,
+            "exp_year": 2017,
+            "fingerprint": "53HU0yi9q9LOctGv",
+            "country": "US",
+            "name": null,
+            "address_line1": null,
+            "address_line2": null,
+            "address_city": null,
+            "address_state": null,
+            "address_zip": null,
+            "address_country": null,
+            "cvc_check": "unchecked",
+            "address_line1_check": null,
+            "address_zip_check": null,
+            "dynamic_last4": null,
+            "metadata": {}
+          },
+          "client_ip": "73.149.218.80"
+        }
+    http_version: 
+  recorded_at: Fri, 29 May 2015 22:07:51 GMT
+- request:
+    method: post
+    uri: https://api.stripe.com/v1/customers
+    body:
+      encoding: US-ASCII
+      string: source=tok_167vdrKs0xJP6zPXjKaQqDQu&plan=standard&email=janedoe%40example.com
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Stripe/v1 RubyBindings/1.21.0
+      Authorization:
+      - Bearer sk_test_zOUkEznY8BwjQO74rsAc52ye
+      Content-Type:
+      - application/x-www-form-urlencoded
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version":"1.21.0","lang":"ruby","lang_version":"2.1.5 p273 (2014-11-13)","platform":"x86_64-darwin13.0","engine":"ruby","publisher":"stripe","uname":"Darwin
+        Dawns-MacBook-Pro.local 13.4.0 Darwin Kernel Version 13.4.0: Wed Mar 18 16:20:14
+        PDT 2015; root:xnu-2422.115.14~1/RELEASE_X86_64 x86_64","hostname":"Dawns-MacBook-Pro.local"}'
+      Content-Length:
+      - '77'
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - nginx
+      Date:
+      - Fri, 29 May 2015 22:07:52 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '2309'
+      Connection:
+      - keep-alive
+      Access-Control-Allow-Credentials:
+      - 'true'
+      Access-Control-Allow-Methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '300'
+      Cache-Control:
+      - no-cache, no-store
+      Request-Id:
+      - req_tnpoaI8Mh37qGXYp
+      Stripe-Version:
+      - '2015-04-07'
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "object": "customer",
+          "created": 1432937272,
+          "id": "cus_6KapTSh2obXnqm",
+          "livemode": false,
+          "description": null,
+          "email": "janedoe@example.com",
+          "delinquent": false,
+          "metadata": {},
+          "subscriptions": {
+            "object": "list",
+            "total_count": 1,
+            "has_more": false,
+            "url": "/v1/customers/cus_6KapTSh2obXnqm/subscriptions",
+            "data": [
+              {
+                "id": "sub_6KapfSicK7VBOm",
+                "plan": {
+                  "interval": "month",
+                  "name": "Standard Plan",
+                  "created": 1432822875,
+                  "amount": 999,
+                  "currency": "usd",
+                  "id": "standard",
+                  "object": "plan",
+                  "livemode": false,
+                  "interval_count": 1,
+                  "trial_period_days": null,
+                  "metadata": {},
+                  "statement_descriptor": null
+                },
+                "object": "subscription",
+                "start": 1432937272,
+                "status": "active",
+                "customer": "cus_6KapTSh2obXnqm",
+                "cancel_at_period_end": false,
+                "current_period_start": 1432937272,
+                "current_period_end": 1435615672,
+                "ended_at": null,
+                "trial_start": null,
+                "trial_end": null,
+                "canceled_at": null,
+                "quantity": 1,
+                "application_fee_percent": null,
+                "discount": null,
+                "tax_percent": null,
+                "metadata": {}
+              }
+            ]
+          },
+          "discount": null,
+          "account_balance": 0,
+          "currency": "usd",
+          "sources": {
+            "object": "list",
+            "total_count": 1,
+            "has_more": false,
+            "url": "/v1/customers/cus_6KapTSh2obXnqm/sources",
+            "data": [
+              {
+                "id": "card_167vdrKs0xJP6zPXhZHk9tMh",
+                "object": "card",
+                "last4": "4242",
+                "brand": "Visa",
+                "funding": "credit",
+                "exp_month": 12,
+                "exp_year": 2017,
+                "fingerprint": "53HU0yi9q9LOctGv",
+                "country": "US",
+                "name": null,
+                "address_line1": null,
+                "address_line2": null,
+                "address_city": null,
+                "address_state": null,
+                "address_zip": null,
+                "address_country": null,
+                "cvc_check": "pass",
+                "address_line1_check": null,
+                "address_zip_check": null,
+                "dynamic_last4": null,
+                "metadata": {},
+                "customer": "cus_6KapTSh2obXnqm"
+              }
+            ]
+          },
+          "default_source": "card_167vdrKs0xJP6zPXhZHk9tMh"
+        }
+    http_version: 
+  recorded_at: Fri, 29 May 2015 22:07:52 GMT
+recorded_with: VCR 2.9.3

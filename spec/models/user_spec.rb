@@ -82,6 +82,13 @@ describe User do
       email = ActionMailer::Base.deliveries.last
       expect(email.body).to include(jane.reset_token)    
     end 
+  end 
 
+  describe "#lock!" do
+    it "locks a user" do
+      jane = Fabricate(:user, locked: false)
+      jane.lock!
+      expect(jane).to be_locked
+    end  
   end  
 end
