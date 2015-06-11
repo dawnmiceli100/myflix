@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425204408) do
+ActiveRecord::Schema.define(version: 20150531175333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,14 @@ ActiveRecord::Schema.define(version: 20150425204408) do
     t.text     "message"
     t.string   "token"
     t.integer  "inviter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "payments", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "amount"
+    t.string   "stripe_charge_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -65,6 +73,8 @@ ActiveRecord::Schema.define(version: 20150425204408) do
     t.string   "reset_token"
     t.datetime "reset_sent_at"
     t.boolean  "admin"
+    t.string   "stripe_customer_id"
+    t.boolean  "locked"
   end
 
   create_table "videos", force: true do |t|

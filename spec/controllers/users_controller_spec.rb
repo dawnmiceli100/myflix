@@ -60,7 +60,7 @@ describe UsersController do
         let(:registration) { double("registration", successful?: true) }
         before do
           UserRegistration.any_instance.should_receive(:register).and_return(registration)
-          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password", stripe_customer_id: "CUST_1"}, stripeToken: stripeToken
         end
 
         it "redirects to the sign in path" do
@@ -76,7 +76,7 @@ describe UsersController do
         let(:registration) { double("registration", successful?: false, error_message: "Your card was declined.") }
         before do
           UserRegistration.any_instance.should_receive(:register).and_return(registration)
-          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password" }, stripeToken: stripeToken
+          post :create, user: { full_name: "Jane Doe", email: "jane@example.com", password: "password", stripe_customer_id: "CUST_1" }, stripeToken: stripeToken
         end
 
         it "renders the new template" do
